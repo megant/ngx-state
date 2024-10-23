@@ -1,0 +1,19 @@
+{
+  "name": "ngx-states",
+  "author": "Tibor Németh",
+  "version": "0.0.5",
+  "peerDependencies": {
+    "@angular/common": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@ngneat/until-destroy": "^10.0.0",
+    "rxjs": "~7.8.0"
+  },
+  "allowedNonPeerDependencies": [
+    "@ngneat/until-destroy",
+    "rxjs"
+  ],
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
