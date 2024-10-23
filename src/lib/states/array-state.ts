@@ -46,7 +46,7 @@ export class ArrayState<T> extends BaseState {
     return this.state;
   }
 
-  public get(predicate: (item: T) => boolean): Observable<T[]> {
+  public stateOfItems(predicate: (item: T) => boolean): Observable<T[]> {
     return this.state.pipe(map(items => items.filter(predicate)),
       distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
     );
