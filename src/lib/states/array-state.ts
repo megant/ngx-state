@@ -46,9 +46,14 @@ export class ArrayState<T> extends BaseState {
     return this.state;
   }
 
-  public get(predicate: (item: T) => boolean, bypassChangeDetection = false): Observable<T[]> {
-    this.bypassChangeDetection = bypassChangeDetection;
-    return this.state.pipe(filter(predicate));
+  public get(predicate: (item: T) => boolean): Observable<T[]> {
+    return this.state.pipe(map(items => items.filter(predicate)),
+      distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+    );
+  }
+
+  public getItems(predicate: (item: T) => boolean): T[] {
+    return this.value.filter(predicate);
   }
 
   public add(value: T, unique?: boolean, bypassChangeDetection = false): void {
