@@ -109,7 +109,7 @@ export class KeyValuesState<KEY extends string | number | symbol, VALUE> extends
     const isUnique = unique ?? true;
     const currentValue = this.getValue(key);
 
-    if (isUnique && currentValue?.includes(value)) {
+    if (isUnique && currentValue?.some(x => JSON.stringify(x) === JSON.stringify(value))) {
       return this.state;
     }
 
@@ -197,15 +197,44 @@ export class KeyValuesState<KEY extends string | number | symbol, VALUE> extends
     });
   }
 
-  public onValueSet(key: KEY, observer: (value: Record<KEY, VALUE[]>) => void, callerComponent?: object): void;
   public onValueSet(
     key: KEY,
-    observer: PartialObserver<Record<KEY, VALUE[]>>,
-    error?: (error: any) => void,
-    complete?: () => void,
+    observer: (value: VALUE[]) => void,
     callerComponent?: object
   ): void;
-  public onValueSet(key: KEY, observer?: ((value: VALUE[]) => void) | PartialObserver<VALUE[]>, error?: (error: any) => void, complete?: () => void, callerComponent?: object): Subscription {
+  public onValueSet(
+    key: KEY,
+    observer: (value: VALUE[]) => void,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
+  public onValueSet(
+    key: KEY,
+    observer: (value: VALUE[]) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
+    callerComponent?: object | boolean
+  ): void;
+  public onValueSet(
+    key: KEY,
+    observer: (value: VALUE[]) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
+    filterValue?: boolean,
+    callerComponent?: object
+  ): void;
+  public onValueSet(
+    key: KEY,
+    observer: PartialObserver<VALUE[]>,
+    callerComponent?: object
+  ): void;
+  public onValueSet(
+    key: KEY,
+    observer: PartialObserver<VALUE[]>,
+    filterValue?: boolean | object,
+    callerComponent?: object
+  ): void;
+  public onValueSet(key: KEY, observer?: ((value: VALUE[]) => void) | PartialObserver<VALUE[]>, error?: (error: any) => void, complete?: () => void, filterValue?: boolean, callerComponent?: object): Subscription {
     let observable = this.state.pipe(
       map(value => value[key]),
       filter(value => !isNullOrUndefined(value) && !this.bypassChangeDetection)
@@ -220,15 +249,44 @@ export class KeyValuesState<KEY extends string | number | symbol, VALUE> extends
     });
   }
 
-  public onValueChange(key: KEY, observer: (value: Record<KEY, VALUE[]>) => void, callerComponent?: object): void;
   public onValueChange(
     key: KEY,
-    observer: PartialObserver<Record<KEY, VALUE[]>>,
-    error?: (error: any) => void,
-    complete?: () => void,
+    observer: (value: VALUE[]) => void,
     callerComponent?: object
   ): void;
-  public onValueChange(key: KEY, observer?: ((value: VALUE[]) => void) | PartialObserver<VALUE[]>, error?: (error: any) => void, complete?: () => void, callerComponent?: object): Subscription {
+  public onValueChange(
+    key: KEY,
+    observer: (value: VALUE[]) => void,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: (value: VALUE[]) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
+    callerComponent?: object | boolean
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: (value: VALUE[]) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
+    filterValue?: boolean,
+    callerComponent?: object
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: PartialObserver<VALUE[]>,
+    callerComponent?: object
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: PartialObserver<VALUE[]>,
+    filterValue?: boolean | object,
+    callerComponent?: object
+  ): void;
+  public onValueChange(key: KEY, observer?: ((value: VALUE[]) => void) | PartialObserver<VALUE[]>, error?: (error: any) => void, complete?: () => void, filterValue?: boolean, callerComponent?: object): Subscription {
     let observable = this.state.pipe(
       map(value => value[key]),
       distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),

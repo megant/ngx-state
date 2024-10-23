@@ -24,7 +24,37 @@ the **NGX States** library.
 
 ## Basic Usage ##
 
-For example, let's take a look at a very simple state service.
+A `State` object essentially has three key properties. 
+
+1. The `.state` property is an Observable\<Type>, which can be subscribed to in the usual way 
+and can also be used with the async pipe commonly known in templates. 
+2. The `.value` property directly contains the current value of the State.
+3. The `.set(value: Type)` method allows us to set the current value of the state
+
+Usage:
+
+```ts
+const testState: State<string> = new State<string>();
+
+// reactive way of getting the value of a state
+testState.state.subscribe(value => console.log(value));
+
+// regular way
+console.log(testState.value)
+
+// it will trigger the subscription's callback
+testState.set('Lorem Ipsum')
+```
+
+In an Angular template:
+
+```angular2html
+<div class="container">
+  {{ testState.state | async }}
+</div>
+```
+
+Now, let's take a look at a very simple state service.
 
 ```ts
 import { Injectable } from '@angular/core';
@@ -76,6 +106,69 @@ export class NameWriterComponent {
   constructor(public states: StatesService) {}
 }
 ```
+
+## Advanced Examples ##
+
+Now, let's look at a slightly more complex, classic example. Let's assume we have an 
+array that contains Vehicle types and their data, and we want to display the data of 
+the Vehicle type selected from a dropdown menu.
+
+The `Vehicle` type looks like this:
+
+```ts
+export type Vehicle = {
+  type: string;
+  brand: string;
+  model: string;
+  year: number;
+}
+```
+
+The `StateService`:
+
+```ts
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class StatesService {
+  public vehicles: ArrayState<Vehicle> = new ArrayState<Vehicle>();
+}
+```
+
+In this example, we encounter a new state, the ArrayState. The ArrayState<Type> 
+indicates that in this state, arrays of Type[] can be stored. Of course, this 
+could be done using State<Type[]> as well, but ArrayState provides several additional 
+convenience features compared to State.
+
+We need a VehicleSelectorComponent:
+
+```ts
+@Component({
+  selector: 'app-vehicle-selector',
+  template: `
+    <div>
+      <label for="vehicleSelect">Select a vehicle type:</label>
+      <select id="vehicleSelect" (change)="onVehicleChange($event.target.value)">
+        <option *ngFor="let vehicle of vehicles" [value]="vehicle.id">{{ vehicle.type }}</option>
+      </select>
+    </div>
+  `
+})
+export class VehicleSelectorComponent {
+  @Input() vehicles: Vehicle[] = []; // List of vehicles passed from parent component
+  @Output() onVehicleSelected: EventEmitter<number> = new EventEmitter<number>(); // Emits the selected vehicle's id
+
+  onVehicleChange(selectedVehicleId: string): void {
+    this.onVehicleSelected.emit(Number(selectedVehicleId)); // Emit selected vehicle id
+  }
+}
+```
+
+
+
+
+
+
 
 
 

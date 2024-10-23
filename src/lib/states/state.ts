@@ -16,7 +16,7 @@ export class State<T> extends BaseState {
 
   constructor(initialValue?: T) {
     super();
-    this.subject = new BehaviorSubject<T>(initialValue ?? {} as T);
+    this.subject = new BehaviorSubject<T>(initialValue ?? null as T);
   }
 
   public set(value: T, bypassChangeDetection = false): Observable<T> {

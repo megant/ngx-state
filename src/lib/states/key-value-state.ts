@@ -185,62 +185,103 @@ export class KeyValueState<KEY extends string | number | symbol, VALUE> extends 
     });
   }
 
- public onValueChange(
+  public onValueSet(
     key: KEY,
-    observer: (value: Record<KEY, VALUE>) => void,
+    observer: (value: VALUE) => void,
     callerComponent?: object
   ): void;
-  public onValueChange(
+  public onValueSet(
     key: KEY,
-    observer: (value: Record<KEY, VALUE>) => void,
-    filterValue?: boolean,
-    callerComponent?: object
-  ): void;
-  public onValueChange(
-    key: KEY,
-    observer: (value: Record<KEY, VALUE>) => void,
+    observer: (value: VALUE) => void,
     error?: (error: any) => void,
     callerComponent?: object
   ): void;
-  public onValueChange(
+  public onValueSet(
     key: KEY,
-    observer: (value: Record<KEY, VALUE>) => void,
-    error?: (error: any) => void,
-    filterValue?: boolean,
-    callerComponent?: object
-  ): void;
-  public onValueChange(
-    key: KEY,
-    observer: (value: Record<KEY, VALUE>) => void,
+    observer: (value: VALUE) => void,
     error?: (error: any) => void,
     complete?: () => void,
-    callerComponent?: object
+    callerComponent?: object | boolean
   ): void;
-  public onValueChange(
+  public onValueSet(
     key: KEY,
-    observer: (value: Record<KEY, VALUE>) => void,
+    observer: (value: VALUE) => void,
     error?: (error: any) => void,
     complete?: () => void,
     filterValue?: boolean,
     callerComponent?: object
   ): void;
-  public onValueChange(
+  public onValueSet(
     key: KEY,
-    observer: PartialObserver<Record<KEY, VALUE>>,
+    observer: PartialObserver<VALUE>,
     callerComponent?: object
-  ): void
-  public onValueChange(
+  ): void;
+  public onValueSet(
     key: KEY,
-    observer: PartialObserver<Record<KEY, VALUE>>,
-    filterValue?: boolean,
+    observer: PartialObserver<VALUE>,
+    filterValue?: boolean | object,
     callerComponent?: object
-  ): void
-  public onValueChange(key: KEY, observer: ((value: VALUE) => void) | PartialObserver<VALUE>, error?: (error: any) => void | object, complete?: () => void, filterValues?: boolean, callerComponent?: object): Subscription {
-    filterValues = (filterValues === undefined) ? true : filterValues;
+  ): void;
+  public onValueSet(key: KEY, observer?: ((value: VALUE) => void) | PartialObserver<VALUE>, error?: (error: any) => void, complete?: () => void, filterValue?: boolean, callerComponent?: object): Subscription {
+    let isValueFiltered: boolean = (typeof filterValue === 'boolean') ? filterValue : true;
 
     let observable: Observable<VALUE> = this.state.pipe(
       map(value => value[key]),
-      filterValues ? filter(value => !isNullOrUndefined(value) && !this.bypassChangeDetection) : tap(),
+      isValueFiltered ? filter(value => !isNullOrUndefined(value) && !this.bypassChangeDetection) : tap()
+    );
+
+    return this.prepareSubscription({
+      observable,
+      observer,
+      error,
+      complete,
+      callerComponent
+    });
+  }
+
+  public onValueChange(
+    key: KEY,
+    observer: (value: VALUE) => void,
+    callerComponent?: object
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: (value: VALUE) => void,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: (value: VALUE) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
+    callerComponent?: object | boolean
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: (value: VALUE) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
+    filterValue?: boolean,
+    callerComponent?: object
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: PartialObserver<VALUE>,
+    callerComponent?: object
+  ): void;
+  public onValueChange(
+    key: KEY,
+    observer: PartialObserver<VALUE>,
+    filterValue?: boolean | object,
+    callerComponent?: object
+  ): void;
+  public onValueChange(key: KEY, observer?: ((value: VALUE) => void) | PartialObserver<VALUE>, error?: (error: any) => void, complete?: () => void, filterValue?: boolean, callerComponent?: object): Subscription {
+    let isValueFiltered: boolean = (typeof filterValue === 'boolean') ? filterValue : true;
+
+    let observable: Observable<VALUE> = this.state.pipe(
+      map(value => value[key]),
+      isValueFiltered ? filter(value => !isNullOrUndefined(value) && !this.bypassChangeDetection) : tap(),
       distinctUntilChanged()
     );
 
