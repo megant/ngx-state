@@ -291,7 +291,7 @@ import { VehicleDataComponent } from './vehicle-data.component';
   template: `
     <div>
       <app-vehicle-selector (onVehicleSelected)="states.selectedVehicleId.set($event)"></app-vehicle-selector>
-      <app-vehicle-data [selectedVehicle]="states.vehicles.stateOfKey(states.selectedVehicleId | async) | async"></app-vehicle-data>
+      <app-vehicle-data [selectedVehicle]="states.vehicles.stateOfKey(states.selectedVehicleId.state | async) | async"></app-vehicle-data>
     </div>
   `,
   imports: [VehicleSelectorComponent, VehicleDataComponent]
