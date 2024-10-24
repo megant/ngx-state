@@ -117,6 +117,7 @@ The `Vehicle` type looks like this:
 
 ```ts
 export type Vehicle = {
+  id: number;
   type: string;
   brand: string;
   model: string;
@@ -128,6 +129,8 @@ The `StateService`:
 
 ```ts
 import { Injectable } from '@angular/core';
+import { ArrayState } from 'ngx-states';
+import { Vehicle } from './vehicle';
 
 @Injectable()
 export class StatesService {
@@ -143,6 +146,9 @@ convenience features compared to State.
 We need a VehicleSelectorComponent:
 
 ```ts
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Vehicle } from './vehicle';
+
 @Component({
   selector: 'app-vehicle-selector',
   template: `
@@ -164,9 +170,159 @@ export class VehicleSelectorComponent {
 }
 ```
 
+We will also need a `VehicleDataComponent`
 
+```ts
+import { Component, Input } from '@angular/core';
+import { Vehicle } from './vehicle';
 
+@Component({
+  selector: 'app-vehicle-data',
+  template: `
+    <div *ngIf="selectedVehicle">
+      <h2>{{ selectedVehicle.make }} {{ selectedVehicle.model }}</h2>
+      <p>Year: {{ selectedVehicle.year }}</p>
+      <p>Color: {{ selectedVehicle.color }}</p>
+    </div>
+    <div *ngIf="!selectedVehicle">
+      <p>No vehicle selected.</p>
+    </div>
+  `
+})
+export class VehicleDataComponent {
+  @Input() selectedVehicle!: Vehicle;
+}
+```
 
+Let's expand the `StatesService` now.
+
+```ts
+import { Injectable } from '@angular/core';
+import { ArrayState, State } from 'ngx-states';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Vehicle } from './vehicle';
+
+@Injectable()
+export class StatesService {
+  public vehicles: ArrayState<Vehicle> = new ArrayState<Vehicle>();
+  public selectedVehicleId: State<number> = new State<number>();
+
+  // Returns a Vehicle identified by the selectedVehicleId state
+  public get selectedVehicle(): Observable<Vehicle | undefined> {
+    return this.selectedVehicleId.state.pipe(
+      map(id => this.vehicles.getFirstItem(vehicle => vehicle.id === id))
+    );
+  }
+}
+```
+
+In our high-level AppComponent, we need to do the following
+
+```ts
+import { Component } from '@angular/core';
+import { StatesService } from './states-service';
+import { VehicleSelectorComponent } from './vehicle-selector.component';
+import { VehicleDataComponent } from './vehicle-data.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  template: `
+    <div>
+      <app-vehicle-selector (onVehicleSelected)="states.selectedVehicleId.set($event)"></app-vehicle-selector>
+      <app-vehicle-data [selectedVehicle]="states.selectedVehicle | async"></app-vehicle-data>
+    </div>
+  `,
+  imports: [VehicleSelectorComponent, VehicleDataComponent]
+})
+export class AppComponent {
+  constructor(public states: StatesService) {
+    this.setVehicles(); // Call the method in the constructor
+  }
+
+  private setVehicles(): void {
+    const vehicles: Vehicle[] = [
+      { id: 1, type: 'Car', brand: 'Toyota', model: 'Camry', year: 2020 },
+      { id: 2, type: 'Truck', brand: 'Ford', model: 'F-150', year: 2021 },
+      { id: 3, type: 'SUV', brand: 'Honda', model: 'CR-V', year: 2019 },
+      { id: 4, type: 'Sedan', brand: 'BMW', model: '3 Series', year: 2022 },
+      { id: 5, type: 'Coupe', brand: 'Chevrolet', model: 'Camaro', year: 2021 }
+    ];
+
+    this.states.vehicles.set(vehicles); // Set the vehicles in the state
+  }
+}
+```
+
+This is just one way to get the selected vehicle's data by ID. The magic happens in the `StatesService`'s `selectedVehicle` 
+getter, where we subscribe to changes in the `selectedVehicleId` state variable and return the first item from the `vehicles` 
+list (with getFirstItem()) that matches the predicate, meaning its id corresponds to the selected vehicle's id. 
+However, this still seems a bit complicated in this form. What if we approached vehicle selection and data display 
+in an even simpler way?
+
+Let's change the `StatesService` to use `KeyValueState` instead of `ArrayState` for the vehicles state.
+
+```ts
+import { Injectable } from '@angular/core';
+import { KeyValueState, State } from 'ngx-states';
+import { Vehicle } from './vehicle';
+
+@Injectable()
+export class StatesService {
+  public vehicles: KeyValueState<number, Vehicle> = new ArrayState<Vehicle>();
+  public selectedVehicleId: State<number> = new State<number>();
+}
+```
+
+In the above example, we are now storing key-value pairs in the state. The key will be the vehicle's ID, and the 
+value will be a `Vehicle`. Accordingly, we also need to modify the `setVehicles` method of the `AppComponent`.
+As you can see, we removed the getter method from the StatesService because we won't need it.
+
+```ts
+import { Component } from '@angular/core';
+import { StatesService } from './states-service';
+import { VehicleSelectorComponent } from './vehicle-selector.component';
+import { VehicleDataComponent } from './vehicle-data.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  template: `
+    <div>
+      <app-vehicle-selector (onVehicleSelected)="states.selectedVehicleId.set($event)"></app-vehicle-selector>
+      <app-vehicle-data [selectedVehicle]="states.vehicles.stateOfKey(states.selectedVehicleId | async) | async"></app-vehicle-data>
+    </div>
+  `,
+  imports: [VehicleSelectorComponent, VehicleDataComponent]
+})
+export class AppComponent {
+  constructor(public states: StatesService) {
+    this.setVehicles(); // Call the method in the constructor
+  }
+
+  private setVehicles(): void {
+    const vehicles: Record<number, Vehicle> = {
+      1: { id: 1, type: 'Car', brand: 'Toyota', model: 'Camry', year: 2020 },
+      2: { id: 2, type: 'Truck', brand: 'Ford', model: 'F-150', year: 2021 },
+      3: { id: 3, type: 'SUV', brand: 'Honda', model: 'CR-V', year: 2019 },
+      4: { id: 4, type: 'Sedan', brand: 'BMW', model: '3 Series', year: 2022 },
+      5: { id: 5, type: 'Coupe', brand: 'Chevrolet', model: 'Camaro', year: 2021 }
+    };
+
+    this.states.vehicles.set(vehicles); // Set the vehicles in the state
+  }
+}
+```
+
+The magic happens in the template here:
+
+```html
+<app-vehicle-data [selectedVehicle]="states.vehicles.stateOfKey(states.selectedVehicleId | async) | async"></app-vehicle-data>
+```
+
+We are not subscribing to the entire vehicles state, only to the state of the value identified by the specific key (`stateOfKey()`). 
+The key is the selectedVehicleId, which is set by the vehicleSelector.
 
 
 
