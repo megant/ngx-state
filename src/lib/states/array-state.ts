@@ -46,10 +46,21 @@ export class ArrayState<T> extends BaseState {
     return this.state;
   }
 
+  public stateOfItem(predicate: (item: T) => boolean): Observable<T> {
+    return this.state.pipe(
+      map(items => items.find(predicate)),
+      filter((item): item is T => item !== undefined),
+      first());
+  }
+
   public stateOfItems(predicate: (item: T) => boolean): Observable<T[]> {
     return this.state.pipe(map(items => items.filter(predicate)),
       distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
     );
+  }
+
+  public getFirstItem(predicate: (item: T) => boolean): T | undefined {
+    return this.value.find(predicate);
   }
 
   public getItems(predicate: (item: T) => boolean): T[] {
