@@ -325,9 +325,21 @@ export class KeyValueState<KEY extends string | number | symbol, VALUE> extends 
     });
   }
 
-  public onFromSecondChange(observer: (value: Record<KEY, VALUE>) => void, callerComponent?: object): void;
   public onFromSecondChange(
     observer: PartialObserver<Record<KEY, VALUE>>,
+    callerComponent?: object
+  ): void;
+  public onFromSecondChange(
+    observer: (value: Record<KEY, VALUE>) => void,
+    callerComponent?: object
+  ): void;
+  public onFromSecondChange(
+    observer: (value: Record<KEY, VALUE>) => void,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
+  public onFromSecondChange(
+    observer: (value: Record<KEY, VALUE>) => void,
     error?: (error: any) => void,
     complete?: () => void,
     callerComponent?: object

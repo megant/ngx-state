@@ -84,9 +84,21 @@ export class ArrayState<T> extends BaseState {
     this.set(newSet.filter(x => x !== value));
   }
 
-  public onSet(observer: (value: T[]) => void, callerComponent?: object): void;
   public onSet(
     observer: PartialObserver<T[]>,
+    callerComponent?: object
+  ): void;
+  public onSet(
+    observer: (value: T[]) => void,
+    callerComponent?: object
+  ): void;
+  public onSet(
+    observer: (value: T[]) => void,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
+  public onSet(
+    observer: (value: T[]) => void,
     error?: (error: any) => void,
     complete?: () => void,
     callerComponent?: object
@@ -105,7 +117,19 @@ export class ArrayState<T> extends BaseState {
     });
   }
 
-  public onChange(observer: (value: T[]) => void, callerComponent?: object): void;
+  public onChange(
+    observer: PartialObserver<T[]>,
+    callerComponent?: object
+  ): void;
+  public onChange(
+    observer: (value: T[]) => void,
+    callerComponent?: object
+  ): void;
+  public onChange(
+    observer: (value: T[]) => void,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
   public onChange(
     observer: PartialObserver<T[]>,
     error?: (error: any) => void,
@@ -155,7 +179,19 @@ export class ArrayState<T> extends BaseState {
     });
   }
 
-  public onFromSecondSet(observer: (value: T[]) => void, callerComponent?: object): void;
+  public onFromSecondSet(
+    observer: PartialObserver<T[]>,
+    callerComponent?: object
+  ): void;
+  public onFromSecondSet(
+    observer: (value: T[]) => void,
+    callerComponent?: object
+  ): void;
+  public onFromSecondSet(
+    observer: PartialObserver<T[]>,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
   public onFromSecondSet(
     observer: PartialObserver<T[]>,
     error?: (error: any) => void,
@@ -177,7 +213,19 @@ export class ArrayState<T> extends BaseState {
     });
   }
 
-  public onFromSecondChange(observer: (value: T[]) => void, callerComponent?: object): void;
+  public onFromSecondChange(
+    observer: PartialObserver<T[]>,
+    callerComponent?: object
+  ): void;
+  public onFromSecondChange(
+    observer: (value: T[]) => void,
+    callerComponent?: object
+  ): void;
+  public onFromSecondChange(
+    observer: PartialObserver<T[]>,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
   public onFromSecondChange(
     observer: PartialObserver<T[]>,
     error?: (error: any) => void,

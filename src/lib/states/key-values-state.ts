@@ -154,7 +154,19 @@ export class KeyValuesState<KEY extends string | number | symbol, VALUE> extends
     return this.state;
   }
 
-  public onSet(observer: (value: Record<KEY, VALUE[]>) => void, callerComponent?: object): void;
+  public onSet(
+    observer: PartialObserver<Record<KEY, VALUE[]>>,
+    callerComponent?: object
+  ): void;
+  public onSet(
+    observer: (value: Record<KEY, VALUE[]>) => void,
+    callerComponent?: object
+  ): void;
+  public onSet(
+    observer: PartialObserver<Record<KEY, VALUE[]>>,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
   public onSet(
     observer: PartialObserver<Record<KEY, VALUE[]>>,
     error?: (error: any) => void,
@@ -175,7 +187,19 @@ export class KeyValuesState<KEY extends string | number | symbol, VALUE> extends
     });
   }
 
-  public onChange(observer: (value: Record<KEY, VALUE[]>) => void, callerComponent?: object): void;
+  public onChange(
+    observer: PartialObserver<Record<KEY, VALUE[]>>,
+    callerComponent?: object
+  ): void;
+  public onChange(
+    observer: (value: Record<KEY, VALUE[]>) => void,
+    callerComponent?: object
+  ): void;
+  public onChange(
+    observer: PartialObserver<Record<KEY, VALUE[]>>,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
   public onChange(
     observer: PartialObserver<Record<KEY, VALUE[]>>,
     error?: (error: any) => void,
@@ -364,7 +388,19 @@ export class KeyValuesState<KEY extends string | number | symbol, VALUE> extends
     });
   }
 
-  public onFromSecondSet(observer: (value: Record<KEY, VALUE[]>) => void, callerComponent?: object): void;
+  public onFromSecondSet(
+    observer: PartialObserver<Record<KEY, VALUE[]>>,
+    callerComponent?: object
+  ): void;
+  public onFromSecondSet(
+    observer: (value: Record<KEY, VALUE[]>) => void,
+    callerComponent?: object
+  ): void;
+  public onFromSecondSet(
+    observer: PartialObserver<Record<KEY, VALUE[]>>,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
   public onFromSecondSet(
     observer: PartialObserver<Record<KEY, VALUE[]>>,
     error?: (error: any) => void,
@@ -386,7 +422,19 @@ export class KeyValuesState<KEY extends string | number | symbol, VALUE> extends
     });
   }
 
-  public onFromSecondChange(observer: (value: Record<KEY, VALUE[]>) => void, callerComponent?: object): void;
+  public onFromSecondChange(
+    observer: PartialObserver<Record<KEY, VALUE[]>>,
+    callerComponent?: object
+  ): void;
+  public onFromSecondChange(
+    observer: (value: Record<KEY, VALUE[]>) => void,
+    callerComponent?: object
+  ): void;
+  public onFromSecondChange(
+    observer: PartialObserver<Record<KEY, VALUE[]>>,
+    error?: (error: any) => void,
+    callerComponent?: object
+  ): void;
   public onFromSecondChange(
     observer: PartialObserver<Record<KEY, VALUE[]>>,
     error?: (error: any) => void,

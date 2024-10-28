@@ -7,6 +7,16 @@ export abstract class BaseState {
   protected bypassChangeDetection: boolean = false;
 
   protected prepareSubscription(data: SubscriptionData): Subscription {
+    if (typeof data.error === "object") {
+      data.callerComponent = data.error;
+      data.error = undefined;
+    }
+
+    if (typeof data.complete === "object") {
+      data.callerComponent = data.complete;
+      data.complete = undefined;
+    }
+
     if (!isNullOrUndefined(data.callerComponent)) {
       data.observable = data.observable.pipe(untilDestroyed(data.callerComponent));
     }
