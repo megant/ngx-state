@@ -8,6 +8,10 @@
     "@ngneat/until-destroy": "^10.0.0",
     "rxjs": "~7.8.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/megant/ngx-state.git"
+  },
   "allowedNonPeerDependencies": [
     "@ngneat/until-destroy",
     "rxjs"
