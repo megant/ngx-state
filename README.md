@@ -267,10 +267,11 @@ Let's change the `StatesService` to use `KeyValueState` instead of `ArrayState` 
 import { Injectable } from '@angular/core';
 import { KeyValueState, State } from 'ngx-states';
 import { Vehicle } from './vehicle';
+import { KeyValuesState } from "./key-values-state";
 
 @Injectable()
 export class StatesService {
-  public vehicles: KeyValueState<number, Vehicle> = new ArrayState<Vehicle>();
+  public vehicles: KeyValueState<number, Vehicle> = new KeyValueState<number, Vehicle>();
   public selectedVehicleId: State<number> = new State<number>();
 }
 ```
