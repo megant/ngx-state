@@ -20,8 +20,7 @@ export class KeyValuesState<KEY extends string | number | symbol, VALUE> extends
         !isNullOrUndefined(record[key]) &&
         !this.bypassChangeDetection
       ),
-      map(record => record[key] as VALUE[]),
-      distinctUntilChanged()
+      map(record => record[key] as VALUE[])
     );
 
     if (changedStateOnly) {
