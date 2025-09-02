@@ -69,7 +69,7 @@ export class ArrayState<T> extends BaseState {
 
   public add(value: T, unique?: boolean, bypassChangeDetection = false): void {
     this.bypassChangeDetection = bypassChangeDetection;
-    const newSet = this.value;
+    const newSet = {...this.value};
     const isUnique = unique ?? true;
     if ((isUnique && !newSet.includes(value)) ||
         !isUnique) {
@@ -78,9 +78,15 @@ export class ArrayState<T> extends BaseState {
     }
   }
 
+  public update(value: T, bypassChangeDetection = false): void {
+    this.bypassChangeDetection = bypassChangeDetection;
+    const newSet = {...this.value};
+    this.set(newSet.map(x => (x !== value) ? x : value));
+  }
+
   public remove(value: T, bypassChangeDetection = false): void {
     this.bypassChangeDetection = bypassChangeDetection;
-    const newSet = this.value;
+    const newSet = {...this.value};
     this.set(newSet.filter(x => x !== value));
   }
 
