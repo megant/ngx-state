@@ -1,7 +1,7 @@
 {
   "name": "ngx-states",
   "author": "Tibor Németh",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "peerDependencies": {
     "@angular/common": "^20.0.0",
     "@angular/core": "^20.0.0",
