@@ -70,14 +70,14 @@ export class ArrayState<T> extends BaseState {
     return this.value.filter(predicate);
   }
 
-  public add(value: T, unique?: boolean, bypassChangeDetection = false): void {
+  public add(value: T, unique?: boolean, bypassChangeDetection = false, deepCloneValues = true): void {
     this.bypassChangeDetection = bypassChangeDetection;
     const newSet = this.value;
     const isUnique = unique ?? true;
     if ((isUnique && !newSet.includes(value)) ||
         !isUnique) {
         newSet.push(value);
-        this.set(newSet);
+        this.set(newSet, bypassChangeDetection, deepCloneValues);
     }
   }
 
