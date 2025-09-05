@@ -40,9 +40,12 @@ export class ArrayState<T> extends BaseState {
     this.subject = new BehaviorSubject<T[]>(initialValue ?? []);
   }
 
-  public set(value: T[], bypassChangeDetection = false): Observable<T[]> {
+  public set(value: T[], bypassChangeDetection = false, deepCloneValues = true): Observable<T[]> {
     this.bypassChangeDetection = bypassChangeDetection;
-    this.subject.next(structuredClone(value));
+    if (deepCloneValues) {
+      value = structuredClone(value);
+    }
+    this.subject.next(value);
     return this.state;
   }
 
