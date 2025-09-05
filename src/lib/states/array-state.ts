@@ -50,7 +50,7 @@ export class ArrayState<T> extends BaseState {
     return this.state.pipe(
       map(items => items.find(predicate)),
       filter((item): item is T => item !== undefined),
-      first());
+      distinctUntilChanged());
   }
 
   public stateOfItems(predicate: (item: T) => boolean): Observable<T[]> {
